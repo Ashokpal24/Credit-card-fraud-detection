@@ -1,7 +1,8 @@
 model/Neural_network
 model/creditcard.csv
 model/kaggle.json
-
+model/Models
+model/Scaler
 
 # Logs
 logs
