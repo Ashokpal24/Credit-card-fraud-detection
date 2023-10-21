@@ -10,6 +10,7 @@ const axiosInstance = axios.create({
 
 const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
+  const [results, setResults] = useState(null);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -26,8 +27,9 @@ const FileUpload = () => {
         axiosInstance
           .post("/predict", jsonPayload)
           .then((response) => {
-            console.log(jsonPayload["data"]);
-            console.log(response.data);
+            const data = response.data;
+            console.log(data);
+            setResults(data);
           })
           .catch((error) => {
             console.log(error);
@@ -41,7 +43,22 @@ const FileUpload = () => {
     <>
       <h1>Upload data</h1>
       <input type="file" accept=".json" onChange={handleFileChange} />
-      <button onClick={handleFileUpload}>upload</button>
+      <br />
+      <br />
+      {selectedFile ? (
+        <button onClick={handleFileUpload}>upload</button>
+      ) : (
+        "No file added.."
+      )}
+      <br />
+      <br />
+      {results
+        ? results.map((value, index) => (
+            <h4 key={index}>
+              {index}:{value}
+            </h4>
+          ))
+        : ""}
     </>
   );
 };

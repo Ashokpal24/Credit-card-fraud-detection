@@ -81,10 +81,10 @@ def predict():
         predictions = list(model.predict(processed_df))
         print(predictions)
 
-        results = {
-            num: "Not Fraud Transaction" if int(value) == 0 else "Fraud Transaction!"
+        results = [
+            "Not Fraud Transaction" if int(value) == 0 else "Fraud Transaction!"
             for num, value in enumerate(predictions, 1)
-        }
+        ]
         return jsonify(results)
 
     except Exception as e:
