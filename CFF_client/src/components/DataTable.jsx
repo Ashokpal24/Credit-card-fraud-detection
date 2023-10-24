@@ -7,17 +7,18 @@ import {
   TableRow,
   TableCell,
 } from "@mui/material";
-import Paper from "@mui/material/Paper";
 
 const DataTable = ({ data, columns }) => {
   console.log(data, columns);
   return (
-    <TableContainer>
+    <TableContainer sx={{ boxShadow: 3 }}>
       <Table>
-        <TableHead>
+        <TableHead style={{ backgroundColor: "#263238" }}>
           <TableRow>
             {columns.map((column) => (
-              <TableCell key={column}>{column}</TableCell>
+              <TableCell sx={{ color: "#FFFFFF" }} key={column}>
+                {column}
+              </TableCell>
             ))}
           </TableRow>
         </TableHead>
@@ -25,7 +26,19 @@ const DataTable = ({ data, columns }) => {
           {data.map((rows, rowIndex) => (
             <TableRow key={rowIndex}>
               {rows.map((row, index) => (
-                <TableCell key={index}>{row}</TableCell>
+                <TableCell
+                  sx={{
+                    backgroundColor:
+                      row == "Fraud Transaction!"
+                        ? "#e91e63"
+                        : row == "Not Fraud Transaction"
+                        ? "#009688"
+                        : "inherit",
+                  }}
+                  key={index}
+                >
+                  {row}
+                </TableCell>
               ))}
             </TableRow>
           ))}

@@ -1,6 +1,37 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useRef } from "react";
 import axios from "axios";
 import DataTable from "./DataTable";
+
+import {
+  Button,
+  createTheme,
+  alpha,
+  getContrastRatio,
+  ThemeProvider,
+  Container,
+  AppBar,
+  Toolbar,
+  Typography,
+  Grid,
+  Box,
+} from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import QueryStatsIcon from "@mui/icons-material/QueryStats";
+
+const violetBase = "#7F00FF";
+const violetMain = alpha(violetBase, 0.7);
+
+const theme = createTheme({
+  palette: {
+    violet: {
+      main: violetMain,
+      light: alpha(violetBase, 0.5),
+      dark: alpha(violetBase, 0.9),
+      contrastText:
+        getContrastRatio(violetMain, "#fff") > 4.5 ? "#fff" : "#111",
+    },
+  },
+});
 
 const axiosInstance = axios.create({
   baseURL: "https://animated-invention-9rv667x9953p7j4-5000.app.github.dev",
@@ -46,6 +77,7 @@ const FileUpload = () => {
   const [selectedFile, setSelectedFile] = useState(null);
   const [loadeddata, setLoadedData] = useState(null);
   const [results, setResults] = useState(null);
+  const inputRef = useRef(null);
 
   const handleFileChange = (e) => {
     setSelectedFile(e.target.files[0]);
@@ -57,8 +89,6 @@ const FileUpload = () => {
         try {
           const data = JSON.parse(e.target.result);
           setLoadedData(data["data"]);
-          console.log(data["data"]);
-          console.log(columnNames);
         } catch (error) {
           console.error("Error parsing JSON:", error);
         }
@@ -92,33 +122,84 @@ const FileUpload = () => {
     };
   };
 
+  const handleButtonClick = () => {
+    inputRef.current.click();
+  };
+
   return (
-    <>
-      <h1>Upload data</h1>
-      <input type="file" accept=".json" onChange={handleFileChange} />
-      <br />
-      <br />
-      {loadeddata ? (
-        <button onClick={handleFileUpload}>upload</button>
-      ) : (
-        "No file added.."
-      )}
-      <br />
-      {selectedFile && loadeddata ? (
-        <DataTable data={loadeddata} columns={columnNames} />
-      ) : (
-        ""
-      )}
-      <br />
-      <br />
-      {results
-        ? results.map((value, index) => (
-            <h4 key={index}>
-              {index}:{value}
-            </h4>
-          ))
-        : ""}
-    </>
+    <ThemeProvider theme={theme}>
+      <AppBar position="static" color="violet" sx={{ mb: 2}}>
+        <Toolbar>
+          <Typography variant="h4" sx={{ color: "#263238" }}>
+            🔎 Credit Card Fraud
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <Container
+        maxWidth="sm"
+        sx={{ display: "flex", flexDirection: "column" }}
+      >
+        <Typography variant="h5" sx={{ mb: 2, color: "#263238" }}>
+          Upload data
+        </Typography>
+        <div>
+          <Button
+            component="label"
+            variant="contained"
+            color="violet"
+            startIcon={<CloudUploadIcon />}
+            sx={{ mb: 2 }}
+          >
+            {selectedFile ? selectedFile.name : "Upload file"}
+            <input
+              type="file"
+              accept=".json"
+              style={{ display: "none", color: "#263238" }}
+              onChange={handleFileChange}
+              ref={inputRef}
+              onClick={handleButtonClick}
+            />
+          </Button>
+        </div>
+        <div>
+          {loadeddata ? (
+            <Button
+              variant="contained"
+              color="violet"
+              onClick={handleFileUpload}
+              sx={{ mb: 4, color: "#263238" }}
+            >
+              🔎 Predict
+            </Button>
+          ) : (
+            <Typography>No file added..</Typography>
+          )}
+        </div>
+      </Container>
+
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          flexGrow: 1,
+          alignItems: "center",
+          justifyContent: "center",
+          mt: 0,
+          pt: 0,
+        }}
+      >
+        <Grid item md={7}>
+          {selectedFile && loadeddata ? (
+            <DataTable data={loadeddata} columns={columnNames} />
+          ) : (
+            ""
+          )}
+        </Grid>
+        <Grid item md={2} sx={{ mb: "15px" }}>
+          {results ? <DataTable data={results} columns={["Results"]} /> : ""}
+        </Grid>
+      </Grid>
+    </ThemeProvider>
   );
 };
 export default FileUpload;

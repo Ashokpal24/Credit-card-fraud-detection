@@ -82,8 +82,8 @@ def predict():
         print(predictions)
 
         results = [
-            "Not Fraud Transaction" if int(value) == 0 else "Fraud Transaction!"
-            for num, value in enumerate(predictions, 1)
+            ["Not Fraud Transaction" if int(value) == 0 else "Fraud Transaction!"]
+            for value in predictions
         ]
         return jsonify(results)
 
